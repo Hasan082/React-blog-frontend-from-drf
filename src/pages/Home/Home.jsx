@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Container from "../../components/shared/Container";
 import { Card, Pagination } from 'antd';
+import { Link } from "react-router-dom";
+
 
 const Home = () => {
     const [postsData, setPostsData] = useState({ results: [], pagination: null });
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(1);
+    const [pageSize, setPageSize] = useState(3); // Default page size
 
     useEffect(() => {
         setLoading(true);
@@ -42,10 +44,19 @@ const Home = () => {
                         {results.length > 0 ? (
                             results.map((post) => (
                                 <Card key={post.id} className="p-2 shadow-md"
-                                    cover={<img alt={post.title} src={post.blog_img} />}>
+                                    cover={
+                                        <img
+                                            alt={post.title}
+                                            src={post.blog_img}
+                                            className="h-96 w-full object-cover"
+                                        />
+                                    }>
                                     <h2 className="text-xl font-semibold">{post.title}</h2>
                                     <p className="mt-2">{post.content}</p>
-                                    <p className="mt-2 text-gray-500">Author: {post.author.full_name}</p>
+                                    <p className="mt-2 text-gray-500">
+                                        Author: <Link to={`/authors/${post.author.slug}`}>{post.author.full_name}</Link>
+                                        </p>
+                                    
                                 </Card>
                             ))
                         ) : (
@@ -64,7 +75,7 @@ const Home = () => {
                             pageSize={pageSize}
                             showSizeChanger={true}
                             onShowSizeChange={(current, size) => {
-                                setPage(1); // reset to first page
+                                setPage(1);
                                 setPageSize(size);
                             }}
                             onChange={(newPage) => setPage(newPage)}
